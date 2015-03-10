@@ -138,7 +138,7 @@ module
             FileUploader.prototype.uploadItem = function(value) {
                 var index = this.getIndexOfItem(value);
                 var item = this.queue[index];
-                var transport = this.isHTML5 ? '_xhrTransport' : '_iframeTransport';
+                var transport = this.isHTML5 && !this.forceIFrame ? '_xhrTransport' : '_iframeTransport';
 
                 item._prepareToUploading();
                 if(this.isUploading) return;
