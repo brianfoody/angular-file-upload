@@ -59,7 +59,7 @@ module
              * @returns {Boolean}
              * @readonly
              */
-            FileUploader.prototype.isHTML5 = !!($window.File && $window.FormData);
+            FileUploader.prototype.isHTML5 = !!($window.File && $window.FormData && !this.forceIFrame);
             /**
              * Adds items to the queue
              * @param {File|HTMLInputElement|Object|FileList|Array<Object>} files
@@ -122,7 +122,7 @@ module
             FileUploader.prototype.uploadItem = function(value) {
                 var index = this.getIndexOfItem(value);
                 var item = this.queue[index];
-                var transport = this.isHTML5 && !this.forceIFrame ? '_xhrTransport' : '_iframeTransport';
+                var transport = this.isHTML5 ? '_xhrTransport' : '_iframeTransport';
 
                 item._prepareToUploading();
                 if(this.isUploading) return;
