@@ -59,7 +59,9 @@ module
              * @returns {Boolean}
              * @readonly
              */
-            FileUploader.prototype.isHTML5 = !!($window.File && $window.FormData && !this.forceIFrame);
+            FileUploader.prototype.isHTML5 = function() {
+                return !!($window.File && $window.FormData && !this.forceIFrame);
+            }
             /**
              * Adds items to the queue
              * @param {File|HTMLInputElement|Object|FileList|Array<Object>} files
@@ -122,7 +124,7 @@ module
             FileUploader.prototype.uploadItem = function(value) {
                 var index = this.getIndexOfItem(value);
                 var item = this.queue[index];
-                var transport = this.isHTML5 ? '_xhrTransport' : '_iframeTransport';
+                var transport = this.isHTML5() ? '_xhrTransport' : '_iframeTransport';
 
                 item._prepareToUploading();
                 if(this.isUploading) return;
@@ -137,7 +139,7 @@ module
             FileUploader.prototype.cancelItem = function(value) {
                 var index = this.getIndexOfItem(value);
                 var item = this.queue[index];
-                var prop = this.isHTML5 ? '_xhr' : '_form';
+                var prop = this.isHTML5() ? '_xhr' : '_form';
                 if (item && item.isUploading) item[prop].abort();
             };
             /**
@@ -1039,7 +1041,7 @@ module
             function FileSelect(options) {
                 FileSelect.super_.apply(this, arguments);
 
-                if(!this.uploader.isHTML5) {
+                if(!this.uploader.isHTML5()) {
                     this.element.removeAttr('multiple');
                 }
                 this.element.prop('value', null); // FF fix
@@ -1078,11 +1080,11 @@ module
              * Event handler
              */
             FileSelect.prototype.onChange = function() {
-                var files = this.uploader.isHTML5 ? this.element[0].files : this.element[0];
+                var files = this.uploader.isHTML5() ? this.element[0].files : this.element[0];
                 var options = this.getOptions();
                 var filters = this.getFilters();
 
-                if (!this.uploader.isHTML5) this.destroy();
+                if (!this.uploader.isHTML5()) this.destroy();
                 this.uploader.addToQueue(files, options, filters);
                 if (this.isEmptyAfterSelection()) this.element.prop('value', null);
             };
@@ -1277,7 +1279,7 @@ module
                     throw new TypeError('"Uploader" must be an instance of FileUploader');
                 }
 
-                if (!uploader.isHTML5) return;
+                if (!uploader.isHTML5()) return;
 
                 var object = new FileUploader.FileDrop({
                     uploader: uploader,
